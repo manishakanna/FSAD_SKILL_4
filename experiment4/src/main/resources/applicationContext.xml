@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+╔══════════════════════════════════════════════════════════════════════╗
+║  TASK 4a – Bean configuration using XML                             ║
+║                                                                      ║
+║  This file demonstrates TWO injection styles for the Student class:  ║
+║                                                                      ║
+║  1. CONSTRUCTOR INJECTION  →  <constructor-arg> elements             ║
+║     Spring calls: new Student(studentId, name, course, year)         ║
+║                                                                      ║
+║  2. SETTER INJECTION       →  <property> elements                    ║
+║     Spring calls: new Student(), then setStudentId(), setName()...   ║
+╚══════════════════════════════════════════════════════════════════════╝
+-->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+           http://www.springframework.org/schema/beans
+           https://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!--
+    ═══════════════════════════════════════════════════════════════
+     BEAN 1 — Constructor Injection
+    ═══════════════════════════════════════════════════════════════
+
+    id       : unique name to retrieve this bean from the context
+    class    : fully-qualified class name of the POJO
+
+    <constructor-arg> maps to Student(String, String, String, int)
+      index  : parameter position (0-based)
+      value  : the literal value to inject
+      type   : (optional) helps Spring resolve overloaded constructors
+
+    Spring calls:
+      new Student("STU-XML-01", "Alice Johnson", "Computer Science", 2)
+    -->
+    <bean id="studentConstructor" class="com.experiment.di.model.Student">
+        <constructor-arg index="0" type="java.lang.String" value="STU-XML-01"/>
+        <constructor-arg index="1" type="java.lang.String" value="Alice Johnson"/>
+        <constructor-arg index="2" type="java.lang.String" value="Computer Science"/>
+        <constructor-arg index="3" type="int"              value="2"/>
+    </bean>
+
+    <!--
+    ═══════════════════════════════════════════════════════════════
+     BEAN 2 — Setter Injection
+    ═══════════════════════════════════════════════════════════════
+
+    <property> maps to a setter method by naming convention:
+      name="studentId"  →  setStudentId(value)
+      name="name"       →  setName(value)
+      name="course"     →  setCourse(value)
+      name="year"       →  setYear(value)
+
+    Spring calls:
+      1. new Student()              ← no-arg constructor
+      2. student.setStudentId(...)  ← setter
+      3. student.setName(...)       ← setter
+      4. student.setCourse(...)     ← setter
+      5. student.setYear(...)       ← setter
+    -->
+    <bean id="studentSetter" class="com.experiment.di.model.Student">
+        <property name="studentId" value="STU-XML-02"/>
+        <property name="name"      value="Bob Smith"/>
+        <property name="course"    value="Information Technology"/>
+        <property name="year"      value="3"/>
+    </bean>
+
+    <!--
+    ═══════════════════════════════════════════════════════════════
+     BEAN 3 — Mixed Injection (Constructor + Setter)
+    ═══════════════════════════════════════════════════════════════
+
+    Demonstrates that both styles can be combined:
+    - Mandatory fields via constructor
+    - Optional/override fields via setter
+    -->
+    <bean id="studentMixed" class="com.experiment.di.model.Student">
+        <!-- Constructor sets mandatory fields -->
+        <constructor-arg index="0" value="STU-XML-03"/>
+        <constructor-arg index="1" value="Carol White"/>
+        <constructor-arg index="2" value="Data Science"/>
+        <constructor-arg index="3" value="1"/>
+        <!-- Setter overrides the course after construction -->
+        <property name="course" value="Data Science (Hons)"/>
+    </bean>
+
+</beans>
